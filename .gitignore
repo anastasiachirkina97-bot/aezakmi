@@ -1,7 +1,4 @@
-# Зависимости
 node_modules/
-
-# Сборки и бинарники
 dist/
 build/
 out/
@@ -11,16 +8,4 @@ release/
 *.exe
 *.zip
 *.tar.gz
-
-# Логи и кэши
-npm-debug.log*
-yarn-debug.log*
-.pnpm-debug.log*
-*.log
-.cache
-.env
-.env.local
-
-# Electron forge / electron-builder
 /release-builds/
-/forge.config.js
