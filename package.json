@@ -4,10 +4,11 @@
   "description": "AEZAKMI Antidetect Browser Pro - Web Application",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+  "dev": "vite",
+  "build": "tsc && vite build",
+  "lint": "eslint .",
+  "preview": "vite preview",
+  "tauri:dev": "pnpm exec tauri dev"
   },
   "dependencies": {
     "@radix-ui/react-checkbox": "^1.0.4",
