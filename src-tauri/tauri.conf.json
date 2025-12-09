@@ -1,23 +1,14 @@
 {
-  "package": {
-    "productName": "AEZAKMI",
-    "version": "2.0.0"
-  },
+  "productName": "AEZAKMI",
+  "version": "2.0.0",
+  "identifier": "com.aezakmi.antidetect",
   "build": {
     "beforeDevCommand": "pnpm dev",
     "beforeBuildCommand": "pnpm build",
     "devUrl": "http://localhost:5173",
     "frontendDist": "../dist"
   },
-  "tauri": {
-    "bundle": {
-      "identifier": "com.aezakmi.antidetect",
-      "active": true,
-      "targets": "all",
-      "resources": [
-        "binaries/launch_playwright.exe"
-      ]
-    },
+  "app": {
     "windows": [
       {
         "label": "main",
@@ -29,11 +20,20 @@
     ],
     "security": {
       "csp": null
-    },
-    "plugins": {
-      "shell": {
-        "open": true
-      }
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "resources": [
+      "binaries/launch_playwright.exe"
+    ]
+  },
+  
+  "plugins": {
+    "shell": {
+      "open": true
     }
   }
+  
 }

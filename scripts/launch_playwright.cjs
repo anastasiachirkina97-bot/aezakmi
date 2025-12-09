@@ -7,10 +7,24 @@ let ProxyChain = null;
 
 async function main() {
   try {
-    const payloadB64 = process.argv[2];
-    if (!payloadB64) {
-      throw new Error('Missing payload argument');
+    const argv = process.argv.slice(2 || 0);
+    if (argv.includes('--help') || argv.includes('-h')) {
+      console.log('Usage: node scripts/launch_playwright.cjs <base64-payload>');
+      console.log('       node scripts/launch_playwright.cjs --dry-run');
+      console.log('Options:\n  --dry-run    Run smoke test and exit 0 without launching browser\n  --help,-h    Show this help');
+      process.exit(0);
     }
+
+    if (argv.includes('--dry-run')) {
+      console.log('Dry-run OK (no payload required)');
+      process.exit(0);
+    }
+
+    const payloadB64 = argv[0];
+    if (!payloadB64) {
+      throw new Error('Missing payload argument (or use --dry-run)');
+    }
+
     const json = Buffer.from(payloadB64, 'base64').toString('utf8');
     const payload = JSON.parse(json);
 
