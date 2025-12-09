@@ -28,8 +28,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Install Playwright browsers
-        run: pnpm exec playwright install chromium
+      - name: Install Playwright browsers to bundle
+        run: |
+          $env:PLAYWRIGHT_BROWSERS_PATH = "$PWD\src-tauri\playwright-browsers"
+          pnpm exec playwright install chromium --with-deps
+        shell: pwsh
 
       - name: Install pkg (for bundling launcher)
         run: npm install -g pkg
@@ -38,6 +41,7 @@ jobs:
         run: |
           mkdir -p src-tauri/binaries
           pkg --targets node18-win-x64 --output src-tauri/binaries/launch_playwright.exe scripts/launch_playwright.cjs
+        shell: bash
 
       - name: Build web assets
         run: pnpm build

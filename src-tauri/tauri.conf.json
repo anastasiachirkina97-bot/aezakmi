@@ -34,7 +34,8 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "binaries/launch_playwright.exe"
+      "binaries/launch_playwright.exe",
+      "playwright-browsers/**"
     ]
   },
   

@@ -3,7 +3,54 @@
 // Usage: node scripts/launch_playwright.cjs '<base64-encoded-json>'
 
 const { chromium } = require('playwright');
+const { execSync } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 let ProxyChain = null;
+
+// Auto-install Chromium if not present (only in dev/unpacked mode)
+async function ensureChromiumInstalled() {
+  // If PLAYWRIGHT_BROWSERS_PATH is set (bundled app), skip auto-install
+  if (process.env.PLAYWRIGHT_BROWSERS_PATH) {
+    console.log('Using bundled Playwright browsers from:', process.env.PLAYWRIGHT_BROWSERS_PATH);
+    try {
+      const executablePath = chromium.executablePath();
+      if (fs.existsSync(executablePath)) {
+        console.log('Chromium browser found at:', executablePath);
+        return;
+      } else {
+        throw new Error('Chromium executable not found at expected path: ' + executablePath);
+      }
+    } catch (e) {
+      throw new Error('Bundled Chromium browser not accessible: ' + e.message);
+    }
+  }
+
+  // Development mode: check and auto-install if needed
+  try {
+    const executablePath = chromium.executablePath();
+    if (fs.existsSync(executablePath)) {
+      console.log('Chromium browser already installed');
+      return;
+    }
+  } catch (e) {
+    console.log('Chromium browser not found, installing...');
+  }
+
+  try {
+    // Try to install Chromium
+    console.log('Running: npx playwright install chromium --with-deps');
+    execSync('npx playwright install chromium --with-deps', { 
+      stdio: 'inherit',
+      timeout: 300000 // 5 minutes timeout
+    });
+    console.log('Chromium browser installed successfully');
+  } catch (installError) {
+    console.error('Failed to auto-install Chromium:', installError.message);
+    console.log('Please run manually: npx playwright install chromium');
+    throw new Error('Chromium browser not installed. Please install manually: npx playwright install chromium');
+  }
+}
 
 async function main() {
   try {
@@ -19,6 +66,9 @@ async function main() {
       console.log('Dry-run OK (no payload required)');
       process.exit(0);
     }
+
+    // Ensure Chromium is installed before launching
+    await ensureChromiumInstalled();
 
     const payloadB64 = argv[0];
     if (!payloadB64) {

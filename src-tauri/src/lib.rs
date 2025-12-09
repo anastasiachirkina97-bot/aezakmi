@@ -72,24 +72,66 @@ fn open_profile(_app: tauri::AppHandle, app_path: String, args: String) -> Resul
 
     #[cfg(not(target_os = "macos"))]
     {
-        // For non-macOS, if app_path == "playwright", spawn node script
+        // For non-macOS, if app_path == "playwright", spawn launcher executable
         if app_path == "playwright" {
-            let cwd = std::env::current_dir().map_err(|e| e.to_string())?;
-            // try repo-root/scripts and src-tauri/scripts
-            let mut script_path = cwd.join("scripts").join("launch_playwright.js");
-            if !script_path.exists() {
-                if let Some(parent) = cwd.parent() {
-                    let alt = parent.join("scripts").join("launch_playwright.js");
-                    if alt.exists() {
-                        script_path = alt;
-                    }
-                }
-            }
             let payload = args; // args is JSON string from frontend
             let payload_b64 = base64::encode(payload);
 
-            let mut cmd = Command::new("node");
-            cmd.arg(script_path.as_os_str()).arg(payload_b64);
+            // In production (bundled), use the sidecar exe from resources
+            let exe_path = if cfg!(target_os = "windows") {
+                // Try to find launch_playwright.exe in bundled resources
+                let app_dir = std::env::current_exe()
+                    .ok()
+                    .and_then(|p| p.parent().map(|p| p.to_path_buf()))
+                    .ok_or("Failed to get app directory")?;
+                
+                // Check multiple possible locations
+                let candidates = vec![
+                    app_dir.join("launch_playwright.exe"),
+                    app_dir.join("binaries").join("launch_playwright.exe"),
+                    app_dir.join("resources").join("launch_playwright.exe"),
+                ];
+                
+                candidates.into_iter()
+                    .find(|p| p.exists())
+                    .ok_or("launch_playwright.exe not found in bundle")?
+            } else {
+                // For Linux/etc, fall back to node script
+                let cwd = std::env::current_dir().map_err(|e| e.to_string())?;
+                let mut script_path = cwd.join("scripts").join("launch_playwright.cjs");
+                if !script_path.exists() {
+                    if let Some(parent) = cwd.parent() {
+                        let alt = parent.join("scripts").join("launch_playwright.cjs");
+                        if alt.exists() {
+                            script_path = alt;
+                        }
+                    }
+                }
+                script_path
+            };
+
+            let mut cmd = if cfg!(target_os = "windows") {
+                Command::new(exe_path)
+            } else {
+                let mut c = Command::new("node");
+                c.arg(exe_path);
+                c
+            };
+            
+            cmd.arg(payload_b64);
+            
+            // Set environment variable for Playwright to find browsers in app directory
+            if cfg!(target_os = "windows") {
+                let app_dir = std::env::current_exe()
+                    .ok()
+                    .and_then(|p| p.parent().map(|p| p.to_path_buf()))
+                    .ok_or("Failed to get app directory")?;
+                let playwright_browsers = app_dir.join("playwright-browsers");
+                if playwright_browsers.exists() {
+                    cmd.env("PLAYWRIGHT_BROWSERS_PATH", playwright_browsers);
+                }
+            }
+            
             let _child = cmd.spawn().map_err(|e| e.to_string())?;
             return Ok(());
         }
