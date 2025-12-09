@@ -31,9 +31,15 @@ jobs:
       - name: Install pkg (for bundling launcher)
         run: npm install -g pkg
 
-      - name: Build launcher exe with pkg
+      - name: Download Node.js installer
         run: |
           mkdir -p src-tauri/binaries
+          Invoke-WebRequest -Uri "https://nodejs.org/dist/v18.20.5/node-v18.20.5-x64.msi" -OutFile "src-tauri/binaries/node-installer.msi"
+          Write-Host "Node.js installer downloaded"
+        shell: pwsh
+
+      - name: Build launcher exe with pkg
+        run: |
           pkg --targets node18-win-x64 --output src-tauri/binaries/launch_playwright.exe scripts/launch_playwright.cjs
         shell: bash
 

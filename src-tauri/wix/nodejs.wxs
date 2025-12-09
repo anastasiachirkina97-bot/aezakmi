@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <Fragment>
+    <!-- Node.js installer as a component -->
+    <Component Id="NodeInstaller" Guid="*" Directory="INSTALLDIR">
+      <File Id="NodeInstallerMsi" Source="binaries/node-installer.msi" KeyPath="yes" />
+    </Component>
+
+    <!-- Custom action to install Node.js -->
+    <CustomAction Id="InstallNodeJS" 
+                  Property="WixQuietExec64CmdLine" 
+                  Value='&quot;[SystemFolder]msiexec.exe&quot; /i &quot;[INSTALLDIR]node-installer.msi&quot; /qb ADDLOCAL=ALL'
+                  Execute="immediate" 
+                  Return="check" />
+
+    <!-- Check if Node.js is already installed -->
+    <Property Id="NODEJSINSTALLED">
+      <RegistrySearch Id="NodeJSRegistry" 
+                      Root="HKLM" 
+                      Key="SOFTWARE\Node.js" 
+                      Name="InstallPath" 
+                      Type="raw" 
+                      Win64="yes" />
+    </Property>
+
+    <!-- Install sequence -->
+    <InstallExecuteSequence>
+      <!-- Only run if Node.js is not already installed -->
+      <Custom Action="InstallNodeJS" After="InstallFiles">
+        NOT NODEJSINSTALLED AND NOT Installed
+      </Custom>
+    </InstallExecuteSequence>
+
+    <!-- UI sequence for showing progress -->
+    <UI>
+      <ProgressText Action="InstallNodeJS">Installing Node.js runtime...</ProgressText>
+    </UI>
+  </Fragment>
+</Wix>

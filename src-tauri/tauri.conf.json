@@ -37,12 +37,22 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "binaries/launch_playwright.exe"
+      "binaries/launch_playwright.exe",
+      "binaries/node-installer.msi"
     ],
     "windows": {
       "certificateThumbprint": null,
       "digestAlgorithm": "sha256",
-      "timestampUrl": ""
+      "timestampUrl": "",
+      "wix": {
+        "language": "en-US",
+        "fragmentPaths": [
+          "wix/nodejs.wxs"
+        ],
+        "componentRefs": [
+          "NodeInstaller"
+        ]
+      }
     }
   },
   
