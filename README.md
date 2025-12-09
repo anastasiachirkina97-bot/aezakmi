@@ -1,68 +1,68 @@
-# Shadcn-UI Template Usage Instructions
+# AEZAKMI - Антидетект браузер
 
-## technology stack
+## 📥 Установка
 
-This project is built with:
+### Требования
+- **Windows 10/11** (64-bit)
+- **Node.js 18+** - [Скачать с официального сайта](https://nodejs.org/)
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Шаги установки
 
-All shadcn/ui components have been downloaded under `@/components/ui`.
+1. **Установите Node.js**
+   - Скачайте LTS версию с https://nodejs.org/
+   - Запустите установщик
+   - Следуйте инструкциям (оставьте все галочки по умолчанию)
+   - Перезагрузите компьютер после установки
 
-## File Structure
+2. **Скачайте AEZAKMI**
+   - Перейдите на [страницу релизов](https://github.com/CJ-aezakmi/aezakmi/releases)
+   - Скачайте последний \`AEZAKMI_x.x.x_x64_en-US.msi\`
 
-- `index.html` - HTML entry point
-- `vite.config.ts` - Vite configuration file
-- `tailwind.config.js` - Tailwind CSS configuration file
-- `package.json` - NPM dependencies and scripts
-- `src/app.tsx` - Root component of the project
-- `src/main.tsx` - Project entry point
-- `src/index.css` - Existing CSS configuration
-- `src/pages/Index.tsx` - Home page logic
+3. **Установите приложение**
+   - Запустите скачанный \`.msi\` файл
+   - Если появится Windows SmartScreen:
+     - Нажмите **"Подробнее"** → **"Выполнить в любом случае"**
+   - Следуйте инструкциям установщика
 
-## Components
+4. **Первый запуск**
+   - Запустите AEZAKMI из меню Пуск
+   - При первом запуске профиля (~1-2 минуты):
+     - Автоматически скачается Chromium браузер (~150 MB)
+     - Подождите завершения установки
+   - Последующие запуски будут мгновенными
 
-- All shadcn/ui components are pre-downloaded and available at `@/components/ui`
+## ✨ Возможности
 
-## Styling
+- ✅ Управление профилями браузера
+- ✅ Поддержка прокси (HTTP/HTTPS/SOCKS5)
+- ✅ Изолированные сессии
+- ✅ Антидетект параметры
+- ✅ Автоматическая установка браузера
+- ✅ Скрытый запуск (без консоли)
 
-- Add global styles to `src/index.css` or create new CSS files as needed
-- Use Tailwind classes for styling components
+## 🚀 Использование
 
-## Development
+### Создание профиля
+1. Нажмите **"+ Добавить профиль"**
+2. Заполните данные
+3. Нажмите **"Сохранить"**
 
-- Import components from `@/components/ui` in your React components
-- Customize the UI by modifying the Tailwind configuration
+### Запуск профиля
+- Нажмите кнопку **"▶ Запустить"** на карточке профиля
 
-## Note
+### Управление прокси
+1. Перейдите на вкладку **"Прокси"**
+2. Нажмите **"+ Добавить прокси"**
+3. Вставьте прокси в формате: \`host:port:username:password\`
 
-- The `@/` path alias points to the `src/` directory
-- In your typescript code, don't re-export types that you're already importing
+## ❓ Решение проблем
 
-# Commands
+### При запуске профиля появляется ошибка
+**Решение:** Установите Node.js с https://nodejs.org/ и перезагрузите компьютер
 
-**Install Dependencies**
+### Windows SmartScreen блокирует установку
+**Решение:** Нажмите "Подробнее" → "Выполнить в любом случае"
 
-```shell
-pnpm i
-```
+## 📝 Лицензия
 
-**Add Dependencies**
-
-```shell
-pnpm add some_new_dependency
-
-**Start Preview**
-
-```shell
-pnpm run dev
-```
-
-**To build**
-
-```shell
-pnpm run build
-```
+Copyright © 2025 AEZAKMI Team

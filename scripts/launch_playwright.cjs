@@ -8,32 +8,9 @@ const fs = require('fs');
 const path = require('path');
 let ProxyChain = null;
 
-// Find bundled Node.js runtime or system node
-function getBundledNodePath() {
-  // When running from pkg bundle, __dirname points to snapshot filesystem
-  // Try to find node-runtime in app directory
-  const exePath = process.execPath;
-  const appDir = path.dirname(exePath);
-  
-  // Check for bundled node-runtime
-  const bundledNodePaths = [
-    path.join(appDir, 'node-runtime', 'node.exe'),
-    path.join(appDir, '..', 'node-runtime', 'node.exe'),
-    path.join(appDir, 'resources', 'node-runtime', 'node.exe'),
-  ];
-  
-  for (const nodePath of bundledNodePaths) {
-    if (fs.existsSync(nodePath)) {
-      console.log('Found bundled Node.js at:', nodePath);
-      return { node: nodePath, npx: path.join(path.dirname(nodePath), 'npx.cmd') };
-    }
-  }
-  
-  // Fallback to system node
-  return { node: 'node', npx: process.platform === 'win32' ? 'npx.cmd' : 'npx' };
-}
-
 // Auto-install Chromium if not present
+// NOTE: This launcher is packaged with pkg, so it's a standalone .exe
+// but it still needs Playwright browser to be installed
 async function ensureChromiumInstalled() {
   // Check if chromium is already available
   try {
@@ -46,13 +23,15 @@ async function ensureChromiumInstalled() {
     console.log('Chromium browser not found, will attempt installation...');
   }
 
-  // Try to auto-install
+  // Try to auto-install using npx from PATH
+  // User needs Node.js installed on their system
   try {
     console.log('Installing Chromium browser...');
     console.log('This may take a few minutes on first launch.');
+    console.log('Note: This requires Node.js to be installed on your system.');
     
-    const { npx } = getBundledNodePath();
-    const installCmd = `"${npx}" playwright install chromium`;
+    const npxCmd = process.platform === 'win32' ? 'npx.cmd' : 'npx';
+    const installCmd = `${npxCmd} playwright install chromium`;
     
     execSync(installCmd, { 
       stdio: 'inherit',
@@ -72,8 +51,12 @@ async function ensureChromiumInstalled() {
     }
   } catch (installError) {
     console.error('Failed to auto-install Chromium:', installError.message);
-    console.error('\nChromium browser is required for this application.');
-    throw new Error('Chromium browser not available.');
+    console.error('\n======================================');
+    console.error('ТРЕБУЕТСЯ: Node.js должен быть установлен!');
+    console.error('Скачайте и установите Node.js с: https://nodejs.org/');
+    console.error('После установки Node.js, перезапустите приложение.');
+    console.error('======================================\n');
+    throw new Error('Chromium browser installation failed. Node.js is required.');
   }
 }
 

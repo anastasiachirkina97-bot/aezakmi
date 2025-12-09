@@ -37,8 +37,7 @@
       "icons/icon.ico"
     ],
     "resources": [
-      "binaries/launch_playwright.exe",
-      "node-runtime/**"
+      "binaries/launch_playwright.exe"
     ],
     "windows": {
       "certificateThumbprint": null,
